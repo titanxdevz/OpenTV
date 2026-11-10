@@ -1,0 +1,93 @@
+name: Bug report
+description: Something in OpenTV isn't working as expected
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report! 🐛
+
+        OpenTV runs on low-RAM Android TV hardware, so **device and Android
+        version details matter a lot**. Please fill in everything below.
+
+  - type: input
+    id: device
+    attributes:
+      label: Device model
+      placeholder: Realme AI Point (DVB91RM)
+    validations:
+      required: true
+
+  - type: input
+    id: android-version
+    attributes:
+      label: Android version
+      placeholder: Android 11 (API 30)
+    validations:
+      required: true
+
+  - type: input
+    id: resolution
+    attributes:
+      label: Screen resolution
+      placeholder: 1280x720
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: What kind of issue is this?
+      options:
+        - App crashes or freezes
+        - App won't launch / Home button doesn't work
+        - Visual glitch or wrong layout
+        - Focus / navigation problem (D-pad)
+        - Wi-Fi or inputs not working
+        - Performance (slow, high RAM)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Press HOME to open OpenTV
+        2. Move the D-pad right to Netflix
+        3. Press BACK
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logcat output
+      description: |
+        Run `adb logcat -d -s CleanLauncher` and paste the relevant lines.
+      render: shell
+
+  - type: input
+    id: opentv-version
+    attributes:
+      label: OpenTV version
+      placeholder: 1.3
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues and this is not a duplicate
+        - label: I removed any sensitive data (SSIDs, IPs, tokens) from the logcat output

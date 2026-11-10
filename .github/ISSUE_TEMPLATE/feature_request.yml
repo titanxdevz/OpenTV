@@ -1,0 +1,55 @@
+name: Feature request
+description: Suggest an idea or improvement for OpenTV
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion! 💡
+
+        OpenTV is deliberately minimal — one screen, no ads, no feeds. The bar
+        for a feature is usually: **does it make the launcher faster, cleaner
+        or more useful on a low-end TV?**
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe the situation you're in, not just the solution.
+      placeholder: |
+        Scrolling the app row on my TV takes ~1s to settle, which feels slow
+        when moving between the first and last app.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would you like OpenTV to do?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area does this touch?
+      options:
+        - Home screen / layout
+        - Navigation & focus
+        - Animation & visual design
+        - Apps & launch behaviour
+        - Wi-Fi / inputs / settings
+        - Performance & memory
+        - Build, CI or documentation
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      options:
+        - label: I checked the existing issues and roadmap
+        - label: The feature keeps the app ad-free and telemetry-free
+        - label: The feature works on a 1 GB RAM device at 1280×720

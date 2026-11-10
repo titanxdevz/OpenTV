@@ -71,11 +71,11 @@ public class AmbientView extends View {
                 || w != mCachedW || h != mCachedH) {
             float cx = w * 0.50f;
             float cy = h * 0.42f;
-            float radius = Math.max(w, h) * 0.78f;
+            float radius = Math.max(w, h) * 0.72f;
             mGradient = new RadialGradient(cx, cy, radius,
                 new int[] {
-                    withAlpha(mColor, 0x8C),
-                    withAlpha(mColor, 0x3D),
+                    withAlpha(mColor, 0x70),
+                    withAlpha(mColor, 0x30),
                     0x00000000
                 },
                 new float[] { 0f, 0.55f, 1f },

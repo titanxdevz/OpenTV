@@ -25,4 +25,20 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <!-- Focusable row inside the long-press "manage app" card -->
+    <style name="ActionRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/outfit</item>
+        <item name="android:textColor">#EEFFFFFF</item>
+        <item name="android:background">@drawable/settings_row_bg</item>
+        <item name="android:focusable">true</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
 </resources>

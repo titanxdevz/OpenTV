@@ -72,10 +72,11 @@ public class GlassView extends View {
         if (mRight <= mLeft || mBottom <= mTop) return;
 
         mRect.set(mLeft, mTop, mRight, mBottom);
-        mRadius = Math.min(14f, (mRight - mLeft) * 0.06f);
+        mRadius = Math.min(12f,
+            Math.min(mRight - mLeft, mBottom - mTop) * 0.075f);
 
         // Outer glow rings (3 passes) — thickness follows the target size
-        float glowStep = Math.min(5f, Math.max(2.5f, (mBottom - mTop) * 0.035f));
+        float glowStep = Math.min(4f, Math.max(2f, (mBottom - mTop) * 0.03f));
         for (int i = 3; i >= 1; i--) {
             float expand = i * glowStep;
             mGlowRect.set(

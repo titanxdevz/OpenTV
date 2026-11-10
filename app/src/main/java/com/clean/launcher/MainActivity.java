@@ -1,10 +1,14 @@
 package com.clean.launcher;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,6 +19,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -57,10 +62,22 @@ public class MainActivity extends AppCompatActivity {
     private int            mLastRowPos = 0;
     /** True while we still want the app row to hold focus (boot / return). */
     private boolean        mRowFocusRequested = true;
+    /** True while the long-press manage card is on screen. */
+    private boolean        mModalOpen = false;
 
     private final Handler         mHandler  = new Handler(Looper.getMainLooper());
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private Runnable              mGreetingRunnable;
+
+    /** Keeps the row in sync when a package is uninstalled from our own menu. */
+    private final BroadcastReceiver mPkgReceiver = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) {
+            if (!Intent.ACTION_PACKAGE_REMOVED.equals(intent.getAction())) return;
+            Uri data = intent.getData();
+            if (data == null) return;
+            removeApp(data.getSchemeSpecificPart());
+        }
+    };
 
     // ── Lifecycle ──────────────────────────────────────────────────────────────
     @Override
@@ -72,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
         setupTopBar();
         showLoadingShimmer();
         loadApps();
+
+        IntentFilter pkgFilter = new IntentFilter(Intent.ACTION_PACKAGE_REMOVED);
+        pkgFilter.addDataScheme("package");
+        ContextCompat.registerReceiver(this, mPkgReceiver, pkgFilter,
+                ContextCompat.RECEIVER_NOT_EXPORTED);
 
         if (savedInstanceState != null) {
             mZone       = savedInstanceState.getInt("zone",   1);
@@ -86,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         updateGreeting();
         // Coming back from system Settings / an app: restore focus once the
         // row has laid out. focusRow() retries, so an early call is harmless.
-        if (mAdapter != null) restoreFocus();
+        if (!mModalOpen && mAdapter != null) restoreFocus();
     }
 
     @Override
@@ -100,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        try { unregisterReceiver(mPkgReceiver); } catch (Exception ignored) { }
         if (mGreetingRunnable != null) mHandler.removeCallbacks(mGreetingRunnable);
         mExecutor.shutdown();
         if (mAdapter != null) mAdapter.shutdown();
@@ -219,9 +242,32 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) { return null; }
     }
 
+    /** Remove an uninstalled app from the row without reloading everything. */
+    private void removeApp(String pkg) {
+        for (int i = 0; i < mApps.size(); i++) {
+            if (!mApps.get(i).packageName.equals(pkg)) continue;
+
+            mApps.remove(i);
+            if (mLastRowPos >= i) mLastRowPos = Math.max(0, mLastRowPos - 1);
+
+            if (mAdapter != null) {
+                mAdapter.notifyItemRemoved(i);
+                if (!mApps.isEmpty())
+                    mAdapter.notifyItemRangeChanged(i, mApps.size() - i);
+            }
+
+            if (mApps.isEmpty()) {
+                mHeroName.setText("");
+                mGlass.hide();
+            } else {
+                focusRow(Math.min(mLastRowPos, mApps.size() - 1));
+            }
+            return;
+        }
+    }
+
     // ── Row setup ──────────────────────────────────────────────────────────────
-    private void setupRow() {
-        mRow.setLayoutManager(new SmoothRowLayoutManager(this));
+    private void setupRow() {        mRow.setLayoutManager(new SmoothRowLayoutManager(this));
 
         mAdapter = new AppRowAdapter(mApps, new AppRowAdapter.Listener() {
             @Override
@@ -240,7 +286,28 @@ public class MainActivity extends AppCompatActivity {
                 mLastRowPos = pos;
                 mZone       = 1;
                 animateHeroName(app.label);
-                mGlass.post(() -> mGlass.moveTo(tileView, 1.10f));
+                // If focus moved on before this post ran, the newer onFocus
+                // will place the glass — never let a stale tile win.
+                mGlass.post(() -> {
+                    if (tileView.isFocused()) mGlass.moveTo(tileView, 1.10f);
+                });
+            }
+
+            /** Long press = manage this app (open / info / uninstall). */
+            @Override
+            public void onLongPress(AppInfo app, View tileView) {
+                mModalOpen = true;
+                mGlass.hide();
+                AppActionsPopup.show(MainActivity.this, app, () -> {
+                    mModalOpen = false;
+                    if (isFinishing() || isDestroyed()) return;
+                    if (tileView.isAttachedToWindow()) {
+                        tileView.requestFocus();
+                        mGlass.post(() -> mGlass.moveTo(tileView, 1.10f));
+                    } else if (!mApps.isEmpty()) {
+                        focusRow(Math.min(mLastRowPos, mApps.size() - 1));
+                    }
+                });
             }
 
             /** Arrives a few ms later from the palette thread. */
@@ -318,7 +385,9 @@ public class MainActivity extends AppCompatActivity {
                 mZone      = 0;
                 mTopBarIdx = idx;
                 mRowFocusRequested = false;
-                mGlass.post(() -> mGlass.moveTo(view, 1.06f));
+                // Pills have their own inversion + scale styling; a floating
+                // glass rectangle on top of them never lines up cleanly.
+                mGlass.hide();
             }
             view.animate()
                 .scaleX(has ? 1.06f : 1f)
@@ -387,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
      * a tile really holds focus (or the user moves to the top bar).
      */
     private void tryFocusRow(final int pos, final int attempt) {
-        if (isFinishing() || isDestroyed() || !mRowFocusRequested) return;
+        if (isFinishing() || isDestroyed() || !mRowFocusRequested || mModalOpen) return;
 
         RecyclerView.ViewHolder vh = mRow.findViewHolderForAdapterPosition(pos);
         if (vh != null && vh.itemView.requestFocus()) {
@@ -424,6 +493,7 @@ public class MainActivity extends AppCompatActivity {
     // ── D-pad ──────────────────────────────────────────────────────────────────
     @Override
     public boolean dispatchKeyEvent(KeyEvent ev) {
+        if (mModalOpen) return super.dispatchKeyEvent(ev);
         if (ev.getAction() != KeyEvent.ACTION_DOWN) return super.dispatchKeyEvent(ev);
         int c = ev.getKeyCode();
 

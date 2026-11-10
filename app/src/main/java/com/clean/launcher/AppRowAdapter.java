@@ -29,6 +29,7 @@ public class AppRowAdapter extends RecyclerView.Adapter<AppRowAdapter.VH> {
 
     public interface Listener {
         void onClick(AppInfo app, View tileView);
+        void onLongPress(AppInfo app, View tileView);
         /** Fired synchronously on focus — hero name + glass must not wait. */
         void onFocus(AppInfo app, View tileView, int pos);
         void onAccent(int accentColor);
@@ -93,6 +94,13 @@ public class AppRowAdapter extends RecyclerView.Adapter<AppRowAdapter.VH> {
             int pos = h.getAdapterPosition();
             if (pos == RecyclerView.NO_ID) return;
             mL.onClick(app, h.itemView);
+        });
+
+        h.itemView.setOnLongClickListener(v -> {
+            int pos = h.getAdapterPosition();
+            if (pos == RecyclerView.NO_ID) return false;
+            mL.onLongPress(app, h.itemView);
+            return true;
         });
 
         h.itemView.setOnFocusChangeListener((v, has) -> {
@@ -196,26 +204,34 @@ public class AppRowAdapter extends RecyclerView.Adapter<AppRowAdapter.VH> {
         }
     }
 
-    /** Tiny → large upscale with bilinear filtering = cheap, smooth blur. */
+    /** Progressive downscale → upscale = smooth, high-quality blur. */
     private Bitmap blurredBackdrop(Drawable d) {
         if (d == null) return null;
-        Bitmap small = null, big = null;
+        Bitmap src = null, half = null, quarter = null, eighth = null, out = null;
         try {
-            small = Bitmap.createBitmap(28, 16, Bitmap.Config.RGB_565);
-            Canvas c = new Canvas(small);
-            d.setBounds(0, 0, 28, 16);
+            src = Bitmap.createBitmap(320, 180, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(src);
+            d.setBounds(0, 0, 320, 180);
             d.draw(c);
 
-            big = Bitmap.createBitmap(240, 135, Bitmap.Config.RGB_565);
-            Canvas c2 = new Canvas(big);
+            half    = Bitmap.createScaledBitmap(src,     160,  90, true);
+            quarter = Bitmap.createScaledBitmap(half,     80,  45, true);
+            eighth  = Bitmap.createScaledBitmap(quarter,  40,  23, true);
+
+            out = Bitmap.createBitmap(384, 216, Bitmap.Config.RGB_565);
+            Canvas oc = new Canvas(out);
             Paint p = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-            c2.drawBitmap(small, null, new Rect(0, 0, 240, 135), p);
-            return big;
+            oc.drawBitmap(eighth, null, new Rect(0, 0, 384, 216), p);
+            oc.drawColor(0x59000000);   // darken so hero text stays readable
+            return out;
         } catch (Exception e) {
-            if (big != null) big.recycle();
+            if (out != null) out.recycle();
             return null;
         } finally {
-            if (small != null) small.recycle();
+            if (src != null)     src.recycle();
+            if (half != null)    half.recycle();
+            if (quarter != null) quarter.recycle();
+            if (eighth != null)  eighth.recycle();
         }
     }
 

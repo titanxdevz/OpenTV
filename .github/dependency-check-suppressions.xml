@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <!--
+      Documented, non-exploitable findings for pinned AndroidX / Glide
+      artifacts. Each entry must state WHY it does not apply to OpenTV.
+
+      Example:
+      <suppress until="2027-01-01">
+        <notes><![CDATA[
+          Reason: ...
+          Ticket: https://github.com/titanxdevz/OpenTV/issues/1
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/[^/]+/[^/]+@[^/]+$</packageUrl>
+      </suppress>
+    -->
+</suppressions>

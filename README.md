@@ -1,148 +1,142 @@
 <div align="center">
 
-# 📺 OpenTV
+# OpenTV
 
-### A clean, Apple TV 4K–style home screen for Android TV
+**A clean, distraction-free home screen for Android TV.**
 
-**No ads. No recommendations row. No telemetry. Just your apps.**
+No ads. No recommendation feed. No telemetry. Just your apps, a clock, and the
+thing you actually wanted to watch.
 
-[![Android](https://img.shields.io/badge/platform-Android%20TV-3DDC84?logo=android)](https://developer.android.com/tv)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Min SDK](https://img.shields.io/badge/min%20SDK-26-3DDC84.svg)](https://developer.android.com)
-[![Target SDK](https://img.shields.io/badge/target%20SDK-34-3DDC84.svg)](https://developer.android.com)
-[![Language](https://img.shields.io/badge/language-Java-orange.svg)](app/src/main/java)
+[![License: MIT](https://img.shields.io/badge/License-MIT-2ea44f.svg)](LICENSE)
+[![Platform: Android TV](https://img.shields.io/badge/Platform-Android%20TV-3DDC84?logo=android&logoColor=white)](https://developer.android.com/tv)
+[![Min SDK: 26](https://img.shields.io/badge/Min%20SDK-26-3DDC84.svg)](https://developer.android.com)
+[![Target SDK: 34](https://img.shields.io/badge/Target%20SDK-34-3DDC84.svg)](https://developer.android.com)
+[![Language: Java](https://img.shields.io/badge/Language-Java-E76F00?logo=openjdk&logoColor=white)](app/src/main/java)
+[![Build: passing](https://github.com/titanxdevz/OpenTV/actions/workflows/ci.yml/badge.svg)](https://github.com/titanxdevz/OpenTV/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/titanxdevz/OpenTV/actions/workflows/codeql.yml/badge.svg)](https://github.com/titanxdevz/OpenTV/actions/workflows/codeql.yml)
+[![Security: OSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/titanxdevz/OpenTV)](https://github.com/titanxdevz/OpenTV)
 
 </div>
 
 ---
 
-## ✨ Preview
+## Preview
 
 <div align="center">
-  <img src="screenshot.png" alt="OpenTV launcher home screen" width="900">
+  <img src="screenshot.png" alt="OpenTV launcher home screen showing the clock, greeting, top-bar pills and a row of app tiles" width="880">
 </div>
 
-A time-of-day sky gradient, a live clock, and a single horizontal row of your
-apps. Focus the tile and the background, glow and hero title all re-theme
-themselves to match that app's artwork.
+Focusing an app re-themes the entire screen: the sky gradient, the ambient
+glow and the cinematic backdrop are all derived from that app's own artwork.
 
 ---
 
-## 🎯 Why OpenTV?
+## Why OpenTV
 
-Stock Android TV launchers are built to show you **ads**. Google TV ships a
-recommendations row, a sponsored app shelf and background telemetry. OpenTV
-replaces all of it with one screen and nothing else.
+Stock Android TV launchers are built to monetise your attention. Google TV
+ships a recommendations row, a sponsored app shelf, and background telemetry
+to support both. OpenTV replaces all of it with one screen and nothing else.
 
 | | Stock Google TV | OpenTV |
 |---|---|---|
-| Ads & sponsored rows | Yes | **None** |
-| Recommendations feed | Yes | **None** |
-| Background telemetry | Yes | **None** |
-| App launch time | Slow (heavy background services) | **Fast — pure Java, no services** |
-| Memory footprint | ~200 MB+ | **~60 MB** |
-| Ad-blocking DNS required | No | **Works great with it** |
+| Ads and sponsored shelves | Yes | None |
+| Recommendations feed | Yes | None |
+| Background telemetry | Yes | None |
+| Network permission | Often | Not requested |
+| App start-up | Slow — several background services | Fast — single Activity, no services |
+| Memory footprint | ~200 MB | ~60 MB |
 
-OpenTV is a single `Activity`, a handful of custom `View`s and a
-`RecyclerView`. There is no background service, no `WorkManager`, no
-analytics SDK and no network permission in the manifest.
-
----
-
-## ✨ Features
-
-- **🕐 Live clock + greeting** — `TextClock`-style time-of-day greeting
-  (*Good Morning / Afternoon / Evening / Night*) that refreshes every minute.
-- **🎨 Adaptive theming** — the focused app's artwork is palette-sampled; its
-  accent colour drives a soft radial ambient glow blended into the sky
-  gradient.
-- **🖼️ Cinematic backdrop** — the focused app's banner is blurred and stretched
-  full-screen as a subtle backdrop behind the UI.
-- **✨ Spring focus highlight** — a custom `GlassView` overlay animates between
-  tiles with an overshoot spring curve.
-- **🎬 Zoom launch animation** — pressing OK on a tile zooms that tile to
-  full-screen while the app opens.
-- **📺 Input switcher** — lists real hardware inputs (HDMI, tuner) via
-  `TvInputManager` and switches to them directly.
-- **📶 Wi-Fi status** — live connection state and SSID, shown in-app.
-- **⚙️ Settings overlay** — a slide-in panel for Wi-Fi, inputs, display and
-  system settings that never leaves the launcher for basic actions.
-- **🧭 Full D-pad navigation** — top bar ↔ app row, with focus state restored
-  across launches, rotation and app switches.
-- **🖼️ Banner or icon tiles** — uses the app's TV banner when present, falling
-  back to the launcher icon.
-- **📦 Lightweight** — Glide disk-caches all artwork, so icons render instantly
-  on the second boot. ~1 GB RAM TVs are the target.
+OpenTV is one `Activity`, a `RecyclerView` and a handful of custom `View`s.
+There is no background service, no `WorkManager`, no analytics SDK, and no
+`INTERNET` permission in the manifest.
 
 ---
 
-## 📸 Screens
+## Features
 
-| Home | Focus |
-|---|---|
-| ![Home](screenshot.png) | *The hero title and ambient glow re-theme to the focused app.* |
+**Adaptive home screen**
+
+- Time-of-day sky gradient with a live clock and a contextual greeting
+  (Good Morning / Afternoon / Evening / Night), refreshed every minute.
+- The focused app's artwork is palette-sampled; its accent colour drives a
+  soft radial ambient glow blended into the sky.
+- The focused app's banner is blurred and stretched full-screen as a subtle
+  cinematic backdrop behind the interface.
+- Hero title cross-fades to the name of the focused app.
+
+**Motion**
+
+- A custom `GlassView` overlay springs between tiles with an overshoot curve.
+- Pressing OK on a tile zooms that tile to full-screen while the app opens.
+- Custom scroll physics for the app row, with a slim position indicator.
+
+**Device integration**
+
+- Hardware input switcher (HDMI, tuner) built on `TvInputManager`.
+- Live Wi-Fi status and SSID, shown in-app.
+- A slide-in settings panel for Wi-Fi, inputs, display and system settings.
+
+**Engineering**
+
+- Full D-pad navigation, with focus state preserved across app switches,
+  rotation and relaunch.
+- Glide disk-caches all artwork, so the second boot is instant.
+- Artwork decoded as `RGB_565` and downscaled — tuned for 1 GB RAM TVs.
+- Banners are used where available, icons as a fallback.
 
 ---
 
-## 🛠️ Build from source
+## Getting started
 
 ### Requirements
 
 | Tool | Version |
 |---|---|
 | JDK | 17 |
-| Android SDK Platform | 34 (`compileSdk`) |
-| Gradle | 8.2+ (wrapper included) |
-| Min device | Android 8.0 (API 26) |
+| Android SDK platform | 34 (`compileSdk`) |
+| Gradle | 8.4 (wrapper included) |
+| Minimum device | Android 8.0 (API 26) |
 
-### 1. Clone
+### Clone and build
 
 ```bash
 git clone https://github.com/titanxdevz/OpenTV.git
 cd OpenTV
 ```
 
-### 2. Point Gradle at your SDK
-
-Create `local.properties` in the project root (it is git-ignored on purpose):
+Point Gradle at your SDK by creating `local.properties` in the project root.
+It is deliberately git-ignored, so it never leaks a machine-specific path.
 
 ```properties
 sdk.dir=/path/to/Android/sdk
 ```
 
-### 3. Build
-
-**macOS / Linux**
+Then build:
 
 ```bash
+# macOS / Linux
 chmod +x gradlew
 ./gradlew assembleDebug
-```
 
-**Windows**
-
-```bat
+# Windows
 gradlew.bat assembleDebug
 ```
 
-The APK lands at:
-
-```
-app/build/outputs/apk/debug/app-debug.apk
-```
+The APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
 
 ---
 
-## 📲 Install on your TV
+## Installing on a TV
 
-### Enable ADB over the network
+### Enabling ADB over the network
 
-Most Android TVs ship **ADB over USB only**. The usual options are:
+Most Android TVs expose **ADB over USB only**, with no network option in
+Developer Options. Two common ways around it:
 
-1. **Developer options → Network ADB / ADB over Wi-Fi** (Android TV 11+ on
-   some OEMs), or
-2. A third-party **"ADB TV" / "ADB Connect"** app from the Play Store, which
-   opens a small HTTP page and enables port `5555`.
+1. Some Android TV 11 builds include **ADB over Wi-Fi** under
+   Developer Options.
+2. A third-party **ADB TV** / **ADB Connect** app from the Play Store opens a
+   small HTTP page on the TV and enables port `5555`.
 
 ### Connect and install
 
@@ -155,9 +149,9 @@ adb shell pm install -r /data/local/tmp/opentv.apk
 adb shell input keyevent KEYCODE_HOME
 ```
 
-OpenTV registers as the `HOME` activity, so the **Home** key now opens it.
+OpenTV registers as the `HOME` activity, so the Home key now opens it.
 
-### Uninstall / roll back to the stock launcher
+### Reverting to the stock launcher
 
 ```bash
 adb shell pm uninstall com.clean.launcher
@@ -165,73 +159,147 @@ adb shell pm uninstall com.clean.launcher
 
 ---
 
-## 🧩 How it works
+## How it works
 
 ```
 app/src/main/java/com/clean/launcher/
-├── MainActivity.java        Entry point — app discovery, D-pad routing, focus restore
-├── AppInfo.java             App record (package, label, icon, banner, cached backdrop)
-├── AppRowAdapter.java       Row adapter — Glide loading, palette sampling, blur generation
-├── AppGridAdapter.java      Grid variant of the row adapter
-├── DockAdapter.java         Bottom dock adapter
-├── SkyView.java             Time-of-day gradient background
-├── AmbientView.java         Soft radial accent glow
-├── GlassView.java           Spring-animated floating focus highlight
-├── FocusHighlightView.java  Focus scale/elevation helper
-├── LaunchAnimator.java      Zoom-to-fullscreen app launch
-├── RowIndicatorView.java    Slim scroll-position indicator
-├── SmoothRowLayoutManager.java  Custom 90ms/px scroll physics
-├── InputsDropdown.java      Hardware input picker
-└── SettingsPopup.java       Slide-in settings overlay
+├── MainActivity.java            Entry point — app discovery, D-pad routing, focus restore
+├── AppInfo.java                 App record (package, label, icon, banner, cached backdrop)
+├── AppRowAdapter.java           Row adapter — Glide loading, palette sampling, blur generation
+├── SkyView.java                 Time-of-day gradient background
+├── AmbientView.java             Soft radial accent glow
+├── GlassView.java               Spring-animated floating focus highlight
+├── LaunchAnimator.java          Zoom-to-fullscreen app launch
+├── RowIndicatorView.java        Slim scroll-position indicator
+├── SmoothRowLayoutManager.java  Custom scroll physics for the app row
+├── InputsDropdown.java          Hardware input picker
+└── SettingsPopup.java           Slide-in settings overlay
 ```
 
-**Rendering pipeline on focus**
+### The focus pipeline
+
+Focus has to feel instant, but colour sampling and blur generation are
+expensive. The pipeline separates the two by cost:
 
 ```
 focus event
-   ├──▶ hero title cross-fade        (synchronous, ~80 ms)
-   ├──▶ GlassView springs to tile    (synchronous)
-   └──▶ palette thread
-          ├──▶ sample accent colour  ──▶ AmbientView + SkyView blend
-          └──▶ blur banner            ──▶ full-screen cinematic backdrop
+   ├── hero title cross-fade         synchronous, ~80 ms
+   ├── GlassView springs to tile     synchronous
+   └── palette thread
+        ├── sample accent colour  ──▶ AmbientView + SkyView blend
+        └── blur banner            ──▶ full-screen cinematic backdrop
 ```
 
-Artwork is decoded at reduced size with `RGB_565` (half the memory of
-`ARGB_8888`) and disk-cached by Glide — the important constraint on a 1 GB TV.
+Hero name and focus highlight never wait on the palette thread. Accent colour
+and backdrop arrive a few milliseconds later and cross-fade in.
+
+### Memory constraints
+
+The target hardware has roughly 1 GB of RAM. Artwork is therefore decoded at
+reduced dimensions with `RGB_565` — half the memory of `ARGB_8888` — and
+cached to disk by Glide. Backdrops are generated by downscaling to 28×16 and
+upscaling with bilinear filtering, which is a cheap and smooth approximation
+of a blur.
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
-| Library | Purpose |
+| Library | Version | Purpose |
+|---|---|---|
+| `androidx.appcompat` | 1.6.1 | Activity and theming |
+| `androidx.recyclerview` | 1.3.2 | App row and settings lists |
+| `androidx.palette` | 1.0.0 | Accent colour extraction |
+| `androidx.constraintlayout` | 2.1.4 | Layout constraints |
+| `com.github.bumptech.glide` | 4.16.0 | Image loading and disk cache |
+
+All are pinned to exact versions.
+
+---
+
+## Project status
+
+<div align="center">
+
+[![Stargazers](https://img.shields.io/github/stars/titanxdevz/OpenTV?style=social)](https://github.com/titanxdevz/OpenTV/stargazers)
+[![Forks](https://img.shields.io/github/forks/titanxdevz/OpenTV?style=social)](https://github.com/titanxdevz/OpenTV/network/members)
+[![Contributors](https://img.shields.io/github/contributors/titanxdevz/OpenTV?style=social)](https://github.com/titanxdevz/OpenTV/graphs/contributors)
+[![Issues](https://img.shields.io/github/issues/titanxdevz/OpenTV?style=flat)](https://github.com/titanxdevz/OpenTV/issues)
+[![License](https://img.shields.io/github/license/titanxdevz/OpenTV?style=flat)](LICENSE)
+
+</div>
+
+### Star history
+
+[![Star History Chart](https://api.star-history.com/svg?repos=titanxdevz/OpenTV&type=Date)](https://star-history.com/#titanxdevz/OpenTV&Date)
+
+---
+
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the
+workflow, commit conventions and the review checklist.
+
+Before opening a pull request, please make sure `./gradlew :app:lintDebug`
+passes and fill in the [pull request template](.github/pull_request_template.md).
+
+### Continuous integration
+
+Every push and pull request runs:
+
+| Workflow | Purpose |
 |---|---|
-| `androidx.appcompat` | Activity & theming |
-| `androidx.recyclerview` | Horizontal app row & settings lists |
-| `androidx.palette` | Accent colour extraction from app artwork |
-| `androidx.constraintlayout` | Layout constraints |
-| `com.github.bumptech.glide` | Image loading + disk cache |
+| [CI](.github/workflows/ci.yml) | Compile, unit test, Android Lint, assemble |
+| [CodeQL](.github/workflows/codeql.yml) | Static analysis for Java |
+| [Gitleaks](.github/workflows/ci.yml) | Secret detection |
+| [OWASP Dependency-Check](.github/workflows/ci.yml) | Dependency CVE scan |
+| [Trivy](.github/workflows/ci.yml) | Filesystem misconfiguration and secret scan |
+| [Dependency Review](.github/workflows/ci.yml) | Licence and CVE review of dependency changes |
+| [Manifest policy](.github/workflows/ci.yml) | Blocks new permissions and cleartext traffic |
+| [Scorecard](.github/workflows/scorecard.yml) | OpenSSF supply-chain security rating |
+
+[Dependabot](.github/dependabot.yml) keeps Gradle, Actions and Android
+dependencies up to date.
 
 ---
 
-## 📄 License
+## Security
 
-Released under the [MIT License](LICENSE).
+Please do not report vulnerabilities in a public issue. Follow the private
+reporting process in [SECURITY.md](.github/SECURITY.md).
+
+OpenTV requests only `ACCESS_NETWORK_STATE` and `ACCESS_WIFI_STATE`. It has no
+`INTERNET` permission and never makes a network request.
 
 ---
 
-## 👤 Author
+## License
+
+OpenTV is open source software released under the [MIT License](LICENSE).
+
+```
+MIT License
+Copyright (c) 2026 titanxdevz
+```
+
+You are free to use, copy, modify, merge, publish, distribute, sublicense and
+sell copies of the software, for commercial or non-commercial purposes, under
+the conditions of the MIT License.
+
+This project is not affiliated with, endorsed by, or sponsored by Google,
+Netflix, Amazon, or any other vendor whose trademarks or icons it displays.
+App icons and banners belong to their respective owners and are loaded at
+runtime by the system.
+
+---
+
+## Acknowledgements
+
+Inspired by [CleanYourTV](https://github.com/Gathin23/cleanyourtv) by
+Gathin23, and by the design language of the Apple TV 4K home screen.
+
+---
+
+## Author
 
 **titanxdevz** — <inkmcontop@gmail.com>
-
-> Inspired by [CleanYourTV](https://github.com/Gathin23/cleanyourtv) by Gathin23.
-
----
-
-## ⚠️ Notes
-
-- OpenTV is not affiliated with, endorsed by, or sponsored by Google, Netflix,
-  Amazon or any other app whose icons it displays.
-- App icons and banners belong to their respective owners and are loaded at
-  runtime by the system.
-- Tested on a **Realme AI Point** (Android 11, 1280×720). It works on any
-  Android TV / Leanback device running API 26+.

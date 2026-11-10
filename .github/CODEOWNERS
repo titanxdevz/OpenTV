@@ -1,0 +1,15 @@
+# Every pull request and push must pass these checks before merge.
+# Required status checks (names must match the CI job names exactly).
+
+# ── Required checks ────────────────────────────────────────────────────────
+Build · Test · Lint
+Secret Scan · Gitleaks
+Dependency Scan · OWASP
+Filesystem Scan · Trivy
+Manifest Policy · Permissions
+License Check
+
+# ── Auto-merge ─────────────────────────────────────────────────────────────
+# Uncomment to let Dependabot merge its own PRs once checks pass.
+# Dependabot · Automerge
+# Dependabot · Automerge · Patch

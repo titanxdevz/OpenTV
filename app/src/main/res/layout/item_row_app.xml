@@ -8,8 +8,9 @@
     android:layout_marginEnd="14dp"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:clipChildren="false"
-    android:background="#FF1C1C1E">
+    android:clipChildren="true"
+    android:clipToOutline="true"
+    android:background="@drawable/row_tile_bg">
 
     <!-- Banner image (shown when app declares a banner) -->
     <ImageView
