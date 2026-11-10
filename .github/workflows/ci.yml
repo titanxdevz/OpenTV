@@ -61,7 +61,7 @@ jobs:
         if: ${{ hashFiles('app/src/test/**') != '' }}
 
       - name: Run unit tests (report upload)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always() && hashFiles('app/src/test/**') != ''
         with:
           name: unit-test-reports
@@ -72,7 +72,7 @@ jobs:
         run: ./gradlew :app:lintDebug --stacktrace
 
       - name: Upload Lint report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: lint-report
@@ -83,7 +83,7 @@ jobs:
         run: ./gradlew :app:assembleDebug :app:assembleRelease --stacktrace
 
       - name: Upload APKs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: opentv-apks
           path: app/build/outputs/apk/**/*.apk
@@ -146,7 +146,7 @@ jobs:
           suppression-file: .github/dependency-check-suppressions.xml
 
       - name: Upload dependency-check report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: dependency-check-report
@@ -284,7 +284,7 @@ jobs:
           wc -l dependency-tree.txt
 
       - name: Upload dependency tree
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dependency-tree
           path: dependency-tree.txt
