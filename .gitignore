@@ -1,0 +1,45 @@
+# Built artifacts
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+build/
+app/build/
+.cxx/
+
+# Gradle
+.gradle/
+local.properties
+gradle-app.setting
+!gradle/wrapper/gradle-wrapper.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+*.hprof
+
+# Keystore / signing material
+*.jks
+*.keystore
+keystore.properties
+release-keys/
+
+# Logs & OS noise
+*.log
+logs/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# SDK / tooling downloaded locally
+platform-tools/
+android-sdk/
+tools/
+
+# Screenshots captured during local testing only
+/tmp-screenshots/
